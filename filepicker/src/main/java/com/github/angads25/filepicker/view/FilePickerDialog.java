@@ -22,6 +22,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDialog;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -52,7 +53,7 @@ import java.util.List;
  * </p>
  */
 
-public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickListener {
+public class FilePickerDialog extends AppCompatDialog implements AdapterView.OnItemClickListener {
     private Context context;
     private ListView listView;
     private TextView dname, dir_path, title;

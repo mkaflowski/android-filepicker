@@ -17,7 +17,9 @@
 package com.github.angads25.filepicker.controller.adapters;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +43,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-/**<p>
+/**
+ * <p>
  * Created by Angad Singh on 09-07-2016.
  * </p>
  */
@@ -50,7 +53,7 @@ import java.util.Locale;
  * Adapter Class that extends {@link BaseAdapter} that is
  * used to populate {@link ListView} with file info.
  */
-public class FileListAdapter extends BaseAdapter{
+public class FileListAdapter extends BaseAdapter {
     private ArrayList<FileListItem> listItem;
     private Context context;
     private DialogProperties properties;
@@ -59,7 +62,7 @@ public class FileListAdapter extends BaseAdapter{
     public FileListAdapter(ArrayList<FileListItem> listItem, Context context, DialogProperties properties) {
         this.listItem = listItem;
         this.context = context;
-        this.properties=properties;
+        this.properties = properties;
     }
 
     @Override
@@ -85,47 +88,67 @@ public class FileListAdapter extends BaseAdapter{
             view = LayoutInflater.from(context).inflate(R.layout.dialog_file_list_item, viewGroup, false);
             holder = new ViewHolder(view);
             view.setTag(holder);
-        }
-        else
-        {   holder = (ViewHolder)view.getTag();
+        } else {
+            holder = (ViewHolder) view.getTag();
         }
         final FileListItem item = listItem.get(i);
         if (MarkedItemList.hasItem(item.getLocation())) {
-            Animation animation = AnimationUtils.loadAnimation(context,R.anim.marked_item_animation);
+            Animation animation = AnimationUtils.loadAnimation(context, R.anim.marked_item_animation);
+            view.setAnimation(animation);
+        } else {
+            Animation animation = AnimationUtils.loadAnimation(context, R.anim.unmarked_item_animation);
             view.setAnimation(animation);
         }
-        else {
-            Animation animation = AnimationUtils.loadAnimation(context,R.anim.unmarked_item_animation);
-            view.setAnimation(animation);
-        }
+
+
+
+
+
         if (item.isDirectory()) {
             holder.type_icon.setImageResource(R.mipmap.ic_type_folder);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                holder.type_icon.setColorFilter(context.getResources().getColor(R.color.colorPrimary,context.getTheme()));
+                holder.type_icon.setColorFilter(context.getResources().getColor(R.color.colorPrimary, context.getTheme()));
+            } else {
+                holder.type_icon.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
             }
-            else
-            {   holder.type_icon.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                int[] attrs;
+                int primaryColor;
+                attrs = new int[]{android.R.attr.colorPrimary/* index 0 */};
+                TypedArray ta = context.obtainStyledAttributes(attrs);
+                primaryColor = ta.getColor(0, 0);
+                ta.recycle();
+                holder.type_icon.setColorFilter(primaryColor);
             }
-            if(properties.selection_type == DialogConfigs.FILE_SELECT)
-            {   holder.fmark.setVisibility(View.INVISIBLE);
+
+            if (properties.selection_type == DialogConfigs.FILE_SELECT) {
+                holder.fmark.setVisibility(View.INVISIBLE);
+            } else {
+                holder.fmark.setVisibility(View.VISIBLE);
             }
-            else
-            {   holder.fmark.setVisibility(View.VISIBLE);
-            }
-        }
-        else {
+        } else {
             holder.type_icon.setImageResource(R.mipmap.ic_type_file);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                holder.type_icon.setColorFilter(context.getResources().getColor(R.color.colorAccent,context.getTheme()));
+                holder.type_icon.setColorFilter(context.getResources().getColor(R.color.colorAccent, context.getTheme()));
+            } else {
+                holder.type_icon.setColorFilter(context.getResources().getColor(R.color.colorAccent));
             }
-            else
-            {   holder.type_icon.setColorFilter(context.getResources().getColor(R.color.colorAccent));
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                int[] attrs;
+                int primaryColor;
+                attrs = new int[]{android.R.attr.colorAccent/* index 0 */};
+                TypedArray ta = context.obtainStyledAttributes(attrs);
+                primaryColor = ta.getColor(0, 0);
+                ta.recycle();
+                holder.type_icon.setColorFilter(primaryColor);
             }
-            if(properties.selection_type==DialogConfigs.DIR_SELECT)
-            {   holder.fmark.setVisibility(View.INVISIBLE);
-            }
-            else
-            {   holder.fmark.setVisibility(View.VISIBLE);
+
+            if (properties.selection_type == DialogConfigs.DIR_SELECT) {
+                holder.fmark.setVisibility(View.INVISIBLE);
+            } else {
+                holder.fmark.setVisibility(View.VISIBLE);
             }
         }
         holder.type_icon.setContentDescription(item.getFilename());
@@ -133,20 +156,18 @@ public class FileListAdapter extends BaseAdapter{
         SimpleDateFormat sdate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         SimpleDateFormat stime = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
         Date date = new Date(item.getTime());
-        if(i==0&&item.getFilename().startsWith(context.getString(R.string.label_parent_dir))) {
+        if (i == 0 && item.getFilename().startsWith(context.getString(R.string.label_parent_dir))) {
             holder.type.setText(R.string.label_parent_directory);
-        }
-        else {
+        } else {
             holder.type.setText(context.getString(R.string.last_edit) + sdate.format(date) + ", " + stime.format(date));
         }
-        if(holder.fmark.getVisibility()==View.VISIBLE) {
-            if(i==0&&item.getFilename().startsWith(context.getString(R.string.label_parent_dir)))
-            {   holder.fmark.setVisibility(View.INVISIBLE);
+        if (holder.fmark.getVisibility() == View.VISIBLE) {
+            if (i == 0 && item.getFilename().startsWith(context.getString(R.string.label_parent_dir))) {
+                holder.fmark.setVisibility(View.INVISIBLE);
             }
             if (MarkedItemList.hasItem(item.getLocation())) {
                 holder.fmark.setChecked(true);
-            }
-            else {
+            } else {
                 holder.fmark.setChecked(false);
             }
         }
@@ -155,14 +176,12 @@ public class FileListAdapter extends BaseAdapter{
             public void onClick(View view) {
                 item.setMarked(!item.isMarked());
                 if (item.isMarked()) {
-                    if(properties.selection_mode == DialogConfigs.MULTI_MODE) {
+                    if (properties.selection_mode == DialogConfigs.MULTI_MODE) {
                         MarkedItemList.addSelectedItem(item);
-                    }
-                    else {
+                    } else {
                         MarkedItemList.addSingleFile(item);
                     }
-                }
-                else {
+                } else {
                     MarkedItemList.removeSelectedItem(item.getLocation());
                 }
                 notifyItemChecked.notifyCheckBoxIsClicked();
@@ -171,16 +190,16 @@ public class FileListAdapter extends BaseAdapter{
         return view;
     }
 
-    private class ViewHolder
-    {   ImageView type_icon;
-        TextView name,type;
+    private class ViewHolder {
+        ImageView type_icon;
+        TextView name, type;
         CheckBox fmark;
 
         ViewHolder(View itemView) {
-            name=(TextView)itemView.findViewById(R.id.fname);
-            type=(TextView)itemView.findViewById(R.id.ftype);
-            type_icon=(ImageView)itemView.findViewById(R.id.image_type);
-            fmark=(CheckBox) itemView.findViewById(R.id.file_mark);
+            name = (TextView) itemView.findViewById(R.id.fname);
+            type = (TextView) itemView.findViewById(R.id.ftype);
+            type_icon = (ImageView) itemView.findViewById(R.id.image_type);
+            fmark = (CheckBox) itemView.findViewById(R.id.file_mark);
         }
     }
 
