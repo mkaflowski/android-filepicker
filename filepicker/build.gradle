@@ -4,14 +4,14 @@ ext {
     bintrayRepo = 'maven'
     bintrayName = 'filepicker'
 
-    publishedGroupId = 'com.github.angads25'
+    publishedGroupId = 'com.github.mkaflowski'
     libraryName = 'File Picker'
     artifact = 'filepicker'
 
     libraryDescription = 'Android Library To pick Files from Device Storage.'
 
-    siteUrl = 'https://github.com/angads25/android-filepicker'
-    gitUrl = 'https://github.com/angads25/android-filepicker.git'
+    siteUrl = 'https://github.com/mkaflowski/android-filepicker'
+    gitUrl = 'https://github.com/mkaflowski/android-filepicker.git'
 
     libraryVersion = '1.1.0'
 
